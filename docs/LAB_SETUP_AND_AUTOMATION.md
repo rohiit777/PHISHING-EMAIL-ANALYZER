@@ -116,6 +116,20 @@ echo $VT_API_KEY | cut -c 1-8
 ---
 ```
 # 🐍 3. Full Production Script: phishguard.py
+
+## Core Detection Engine & Algorithmic Capabilities
+PhishGuard is an automated, high-throughput email triage engine engineered to replicate and accelerate Tier-1/Tier-2 SOC forensic workflows in under 50 milliseconds. The tool parses raw RFC 822 MIME objects to uncover multi-layer evasions across headers, body markup, and binary attachments. Rather than relying on simple keyword matching, PhishGuard leverages normalized pattern recognition, typographic distance algorithms, and live threat intelligence lookups to compute a deterministic risk score (0–100) and normalize Indicators of Compromise (IOCs) into SIEM-ready JSON reports.
+
+* Visual Homoglyph & Leet-Speak Typosquatting: Normalizes character substitutions (e.g., 0 $\rightarrow$ o, 1 $\rightarrow$ l) and computes Levenshtein edit distances against an internal catalog of 80+ enterprise brands (such as Microsoft, Google, and PayPal) to uncover lookalike infrastructure like micros0ft.com.
+
+* HTML Anchor Deception & Raw IP Auditing: Implements a custom streaming HTMLParser that evaluates href targets against visible anchor text, catching discrepancies where benign-looking text (e.g., security.microsoft.com) masks redirection to unauthorized raw IP hosts ([http://192.168.](http://192.168.)x.x) or attacker-controlled C2 routes.
+
+* MIME Transport & Header Discrepancy Auditing: Inspects sender identity alignment by comparing From, Reply-To, and Return-Path headers to detect unauthenticated display spoofing, unauthorized reply redirection, and disposable high-risk Top-Level Domains (TLDs).
+
+* Cryptographic Payload Carving & Magic Byte Inspection: Automatically carves inbound MIME attachments without host execution, flags evasive naming patterns (such as double-extension .pdf.exe executables and HTML smuggling .html files), and computes SHA-256 cryptographic signatures.
+
+* VirusTotal v3 Intelligence & Safe Defanging: Ingests live threat telemetry via the VirusTotal v3 REST API to correlate carved hashes with global AV engines, automatically defanging extracted URLs (hxxp://, [.]) to ensure safe operational handling.
+
 ## Ensure this code is saved in ~/phishops/phishguard.py:
 ```
 #!/usr/bin/env python3
@@ -357,4 +371,5 @@ cd ~/phishops
 python3 phishguard.py m365_quarantine_phish.eml
 ```
 <img width="1884" height="814" alt="Screenshot 2026-09-14 004541" src="https://github.com/user-attachments/assets/703a0331-f68b-4166-821e-0f7f36a726f4" />
+
 
